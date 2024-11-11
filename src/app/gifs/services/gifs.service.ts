@@ -12,10 +12,26 @@ export class GifsService {
   public gifList: Gif[] = [];
 
 
-  constructor( private http:HttpClient) {   }
+  constructor( private http:HttpClient) {
+    this.loadLocalStorate();
+    console.log('Saco datos del navegador');
+
+   }
 
   get tagHistory(){
     return [...this._tagsHistory];
+  }
+
+  private saveLocalStorage ():void{
+    localStorage.setItem('history2', JSON.stringify(this._tagsHistory));
+  }
+
+  private loadLocalStorate ():void{
+    if (!localStorage.getItem('history2')) return;
+
+    this._tagsHistory = JSON.parse(localStorage.getItem('history2')!);
+
+    this.searchTag (this._tagsHistory[0]);
   }
 
   private organizeHistory( tag: string){
@@ -28,6 +44,8 @@ export class GifsService {
     this._tagsHistory.unshift ( tag ) ;
 
     this._tagsHistory = this._tagsHistory.splice(0,10);
+
+    this.saveLocalStorage();
 
   }
 
